@@ -113,26 +113,22 @@ Request Body:
     "amount": 100.34,
     "splitMode": "EQUAL", // PERCENTAGE, AMOUNT,
     "paidBy": "U1234",
-    "splitBetween": [
+    "splits": [
         {
             "userId": "U1234",
-            "amountOwed": 55, // based on enum value of splitMode
-            "percentageOwed": 10 // based on enum value of splitMode
+            "value": 55 // based on enum value of splitMode
         }
         {
             "userId": "U2345",
-            "amountOwed": 22,
-            "percentageOwed": 80
+            "value": 22
         }
         {
             "userId": "U3456",
-            "amountOwed": 13,
-            "percentageOwed": 7
+            "value": 13
         }
         {
             "userId": "U4567",
-            "amountOwed": 10.34,
-            "percentageOwed": 3
+            "value": 10.34
         }
     ],
 }
@@ -145,19 +141,25 @@ Body:
     "groupId": "G123",
     "balances": [
         {
-            "from": "U2345",
-            "to": "U1234",
-            "amount": 22
+            "balanceId": "B123",
+            "fromUserId": "U2345",
+            "toUserId": "U1234",
+            "amount": 22,
+            "settled": false
         },
         {
-            "from": "U3456",
-            "to": "U1234",
-            "amount": 13
+            "balanceId": "B234",
+            "fromUserId": "U3456",
+            "toUserId": "U1234",
+            "amount": 13,
+            "settled": false
         },
         {
-            "from": "U4567",
-            "to": "U1234",
-            "amount": 10.34
+            "balanceId": "B2345",
+            "fromUserId": "U4567",
+            "toUserId": "U1234",
+            "amount": 10.34,
+            "settled": false
         }
     ],
     "createdAt": 121291212,
@@ -172,16 +174,14 @@ Request Body:
     "userId": "U2345",
     "amount": 100.34,
     "splitMode": "EQUAL", // PERCENTAGE, AMOUNT
-    "splitBetween": [
+    "splits": [
         {
             "userId": "U1234",
-            "amountOwed": 55, // based on enum value of splitMode
-            "percentageOwed": 10 // based on enum value of splitMode
+            "value": 55 // based on enum value of splitMode
         }
         {
             "userId": "U2345",
-            "amountOwed": 22,
-            "percentageOwed": 80
+            "value": 22
         }
     ],
 }
@@ -195,30 +195,35 @@ Request Body:
     "amount": 100.34,
     "balances": [
         {
-            "from": "U2345",
-            "to": "U1234",
-            "amount": 22
+            "balanceId": "B123",
+            "fromUserId": "U2345",
+            "toUserId": "U1234",
+            "amount": 22,
+            "settled": false
         },
         {
-            "from": "U3456",
-            "to": "U1234",
-            "amount": 13
+            "balanceId": "B234",
+            "fromUserId": "U3456",
+            "toUserId": "U1234",
+            "amount": 13,
+            "settled": false
         },
         {
-            "from": "U4567",
-            "to": "U1234",
-            "amount": 10.34
+            "balanceId": "B2345",
+            "fromUserId": "U4567",
+            "toUserId": "U1234",
+            "amount": 10.34,
+            "settled": false
         }
     ],
     "createdAt": 121291212,
     "updatedAt": 121291212
 }
 
-POST /expenses/{expenseId}/pay
+PATCH /balances/{balanceId}
 {
-   "from": "U3456",
-   "to": "U1234",
-   "amount": 13
+   "balanceId": "B123",
+   "settled": true
 }
 ```
 ## Database schema
@@ -227,4 +232,8 @@ All tables will have created_at, updated_at by default.
 
 <img src="dbschema.png">
 
-## LLD
+## Goals
+1. Learn about annotations and how they work
+2. Learn about thread utilisation, CPU utilisation and multi threading
+3. Learn about async and sync processes
+4. Implement the visitor pattern
