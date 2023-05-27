@@ -91,27 +91,30 @@ Request Body:
     "userId": "U1234",
     "createdBy": "U1234, // must be same as userId for this call, immutable
     "amount": 100.34,
-    "splitMode": "EQUAL", // PERCENTAGE, AMOUNT
+    "splitMode": "EQUAL", // PERCENTAGE, AMOUNT,
+    "paidBy": "U1234",
     "splitBetween": [
-        "U1234": {
-            "paidFull": true,
+        {
+            "userId": "U1234",
             "amountOwed": 55, // based on enum value of splitMode
             "percentageOwed": 10 // based on enum value of splitMode
         }
-        "U2345": {
+        {
+            "userId": "U2345",
             "amountOwed": 22,
             "percentageOwed": 80
         }
-        "U3456": {
+        {
+            "userId": "U3456",
             "amountOwed": 13,
             "percentageOwed": 7
         }
-        "U4567": {
+        {
+            "userId": "U4567",
             "amountOwed": 10.34,
             "percentageOwed": 3
         }
     ],
-    "simplifyDebts": true // false
 }
 
 Response:
@@ -150,12 +153,13 @@ Request Body:
     "amount": 100.34,
     "splitMode": "EQUAL", // PERCENTAGE, AMOUNT
     "splitBetween": [
-        "U1234": {
+        {
+            "userId": "U1234",
             "amountOwed": 55, // based on enum value of splitMode
             "percentageOwed": 10 // based on enum value of splitMode
         }
-        "U2345": {
-            "paidFull": true,
+        {
+            "userId": "U2345",
             "amountOwed": 22,
             "percentageOwed": 80
         }
@@ -198,3 +202,54 @@ POST /expenses/{expenseId}/pay
    "amount": 13
 }
 ```
+## Database schema
+
+All tables will have created_at, updated_at by default.
+
+Sharding key: user_id
+Unique: email, phone_number
+
+| users        |
+|--------------|
+| id           |
+| user_id      |
+| first_name   |
+| last_name    |
+| email        |
+| phone_number |
+
+Sharding key: user_id
+Unique: active_jwt, refresh_token
+
+| auth          |
+|---------------|
+| id            |
+| user_id       |
+| active_jwt    |
+| expiry        |
+| refresh_token |
+| private_key   |
+
+Sharding key: expense_id
+
+| expenses   |
+|------------|
+| id         |
+| expense_id |
+| amount     |
+| paid_by    |
+| split_mode |
+| created_by |
+
+Sharding key: expense_id
+
+| balances   |
+|------------|
+| id         |
+| balance_id |
+| expense_id |
+| from       |
+| to         |
+| amount     |
+
+## LLD
