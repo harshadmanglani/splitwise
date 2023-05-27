@@ -89,7 +89,8 @@ Request Body:
 {
    "userId": "U1234,
    "name": "Coorg",
-   "users": ["U4567", "U3456", "U4568"]
+   "description": "May Trip 2023",
+   "users": ["U1234", "U4567", "U3456", "U4568"]
 }
 
 Response:
