@@ -10,13 +10,13 @@ Create a backend application that allows users to do the following tasks
       1. percentages
       2. absolute amounts
    3. they can exclude a particular user from the expense altogether
+4. Create an expense group of users
+5. Simplify payments in a group
 
 ## Future scope
 1. Add reminders
 2. Integrate with collect flows for P2P (Gpay, PayTM)
 3. Add update history in expenses API
-4. Create a group of users where adding a new expense will by default split the amount equally
-5. Simplify payments in a group
 
 ## APIs
 ```
@@ -63,8 +63,7 @@ Code 200 OK
 Body:
 {
     "totalBalance": -1000.34,
-    "expenses": [],
-    "balances": []
+    "groups": []
 }
 
 ### GET /users/search?searchTerms=Harshad&Manglani
@@ -83,16 +82,37 @@ Body:
     ]
 }
 
+### POST /groups
+Request Headers:
+Authorization: Bearer <JWT>
+Request Body:
+{
+   "userId": "U1234,
+   "name": "Coorg",
+   "users": ["U4567", "U3456", "U4568"]
+}
+
+Response:
+Code 201 Created
+Body:
+{
+   "groupId": "G123",
+   "createdAt": 121291212,
+   "updatedAt": 121291212
+}
+
+
 ### POST /expenses
 Request Headers:
 Authorization: Bearer <JWT>
 Request Body:
 {
     "userId": "U1234",
-    "createdBy": "U1234, // must be same as userId for this call, immutable
+    "groupId": "G123", // null is the default group
     "amount": 100.34,
     "splitMode": "EQUAL", // PERCENTAGE, AMOUNT,
     "paidBy": "U1234",
+    "simplifyDebts": true, // available only for expense groups, not for the default group
     "splitBetween": [
         {
             "userId": "U1234",
@@ -122,6 +142,7 @@ Code 201 Created
 Body:
 {
     "expenseId": "EX1234",
+    "groupId": "G123",
     "balances": [
         {
             "from": "U2345",
@@ -139,7 +160,6 @@ Body:
             "amount": 10.34
         }
     ],
-    "createdBy": "U1234",
     "createdAt": 121291212,
     "updatedAt": 121291212
 }
@@ -190,7 +210,6 @@ Request Body:
             "amount": 10.34
         }
     ],
-    "createdBy": "U1234",
     "createdAt": 121291212,
     "updatedAt": 121291212
 }
