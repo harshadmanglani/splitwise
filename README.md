@@ -226,50 +226,5 @@ POST /expenses/{expenseId}/pay
 
 All tables will have created_at, updated_at by default.
 
-Sharding key: user_id
-Unique: email, phone_number
-
-| users        |
-|--------------|
-| id           |
-| user_id      |
-| first_name   |
-| last_name    |
-| email        |
-| phone_number |
-
-Sharding key: user_id
-Unique: active_jwt, refresh_token
-
-| auth          |
-|---------------|
-| id            |
-| user_id       |
-| active_jwt    |
-| expiry        |
-| refresh_token |
-| private_key   |
-
-Sharding key: expense_id
-
-| expenses   |
-|------------|
-| id         |
-| expense_id |
-| amount     |
-| paid_by    |
-| split_mode |
-| created_by |
-
-Sharding key: expense_id
-
-| balances   |
-|------------|
-| id         |
-| balance_id |
-| expense_id |
-| from       |
-| to         |
-| amount     |
-
+<img src="dbschema.png">
 ## LLD
