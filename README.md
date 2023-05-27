@@ -11,12 +11,12 @@ Create a backend application that allows users to do the following tasks
       2. absolute amounts
    3. they can exclude a particular user from the expense altogether
 4. Create an expense group of users
-5. Simplify payments in a group
 
 ## Future scope
 1. Add reminders
 2. Integrate with collect flows for P2P (Gpay, PayTM)
 3. Add update history in expenses API
+4. Simplify payments in a group
 
 ## APIs
 ```
@@ -113,7 +113,6 @@ Request Body:
     "amount": 100.34,
     "splitMode": "EQUAL", // PERCENTAGE, AMOUNT,
     "paidBy": "U1234",
-    "simplifyDebts": true, // available only for expense groups, not for the default group
     "splitBetween": [
         {
             "userId": "U1234",
@@ -227,4 +226,5 @@ POST /expenses/{expenseId}/pay
 All tables will have created_at, updated_at by default.
 
 <img src="dbschema.png">
+
 ## LLD
