@@ -37,7 +37,7 @@ Body:
     "userId": "U1234"
 }
 
-### POST /users/login
+POST /users/login
 Request Body:
 {
     "email": "harshad@example.com",
@@ -55,18 +55,19 @@ Body:
     "refreshToken": "refreshToken"
 }
 
-### GET /users/{userId}
+GET /users/{userId}
 Request Headers:
 Authorization: Bearer <JWT>
 Response:
 Code 200 OK
 Body:
 {
+    "userId": "U123",
     "totalBalance": -1000.34,
     "groups": []
 }
 
-### GET /users/search?searchTerms=Harshad&Manglani
+GET /users/search?searchTerms=Harshad&Manglani
 Request Headers:
 Authorization: Bearer <JWT>
 Response:
@@ -82,7 +83,7 @@ Body:
     ]
 }
 
-### POST /groups
+POST /groups
 Request Headers:
 Authorization: Bearer <JWT>
 Request Body:
@@ -103,7 +104,7 @@ Body:
 }
 
 
-### POST /expenses
+POST /expenses
 Request Headers:
 Authorization: Bearer <JWT>
 Request Body:
@@ -166,7 +167,7 @@ Body:
     "updatedAt": 121291212
 }
 
-### PATCH /expenses/{expenseId}
+PATCH /expenses/{expenseId}
 Request Headers:
 Authorization: Bearer <JWT>
 Request Body:
@@ -186,10 +187,46 @@ Request Body:
     ],
 }
 
-### GET /expenses/{expenseId}
+Response:
+Code: 200 OK
+Body:
+{
+    "expenseId": "EX1234",
+    "groupId": "G123",
+    "balances": [
+        {
+            "balanceId": "B123",
+            "fromUserId": "U2345",
+            "toUserId": "U1234",
+            "amount": 22,
+            "settled": false
+        },
+        {
+            "balanceId": "B234",
+            "fromUserId": "U3456",
+            "toUserId": "U1234",
+            "amount": 13,
+            "settled": false
+        },
+        {
+            "balanceId": "B2345",
+            "fromUserId": "U4567",
+            "toUserId": "U1234",
+            "amount": 10.34,
+            "settled": false
+        }
+    ],
+    "createdAt": 121291212,
+    "updatedAt": 121291212
+}
+
+GET /expenses/{expenseId}
 Request Headers:
 Authorization: Bearer <JWT>
-Request Body:
+
+Response:
+Code: 200 OK
+Body:
 {
     "expenseId": "EX1234",
     "amount": 100.34,
@@ -221,10 +258,17 @@ Request Body:
 }
 
 PATCH /balances/{balanceId}
+Request Headers:
+Authorization: Bearer <JWT>
+Request Body:
 {
+   "userId": "U123",
    "balanceId": "B123",
    "settled": true
 }
+
+Response:
+Code: 200 OK
 ```
 ## Database schema
 
@@ -237,3 +281,8 @@ All tables will have created_at, updated_at by default.
 2. Learn about thread utilisation, CPU utilisation and multi threading
 3. Learn about async and sync processes
 4. Implement the visitor pattern
+5. Understand garbage collection
+
+### Open Points
+1. How do I implement user authentication with JWTs in the header and annotations?
+2. 
