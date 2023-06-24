@@ -276,13 +276,6 @@ All tables will have created_at, updated_at by default.
 
 <img src="dbschema.png">
 
-## Goals
-1. Learn about annotations and how they work
-2. Learn about thread utilisation, CPU utilisation and multi threading
-3. Learn about async and sync processes
-4. Implement the visitor pattern
-5. Understand garbage collection
 
 ### Open Points
 1. How do I implement user authentication with JWTs in the header and annotations?
-2. 
