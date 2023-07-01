@@ -276,6 +276,9 @@ All tables will have created_at, updated_at by default.
 
 <img src="dbschema.png">
 
+### Goals
+1. Write to code to optimize for garbage collection
+2. Understand GoRoutines and implement them to handle scale and check for race conditions
 
 ### Open Points
 1. How do I implement user authentication with JWTs in the header and annotations?
