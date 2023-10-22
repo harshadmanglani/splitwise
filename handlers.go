@@ -11,8 +11,7 @@ type okResp struct {
 }
 
 func initHTTPHandlers(e *echo.Echo, app *App) {
-	var g *echo.Group
-
+	var g *echo.Group = e.Group("")
 	// TODO: implement JWTs
 	g.GET("/api/health", handleHealthCheck)
 	g.GET("/api/config", handleGetServerConfig)
