@@ -10,6 +10,7 @@ import (
 type App struct {
 	db      *sqlx.DB
 	queries *models.Queries
+	fs      stuffbin.FileSystem
 }
 
 var (
@@ -28,6 +29,7 @@ func main() {
 	app := &App{
 		db:      db,
 		queries: queries,
+		fs:      fs,
 	}
 	initHTTPServer(app)
 }

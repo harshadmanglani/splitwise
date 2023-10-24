@@ -19,16 +19,15 @@ import (
 
 var (
 	ko              = koanf.New(".")
-	appDir   string = "."
+	appDir   string = "../"
 	appFiles        = []string{
-		"./config.yaml:config.yaml",
 		"./sql/queries.sql:queries.sql",
 		"./sql/schema.sql:schema.sql",
 	}
 )
 
 func init() {
-	ko.Load(file.Provider("config.yaml"), yaml.Parser())
+	ko.Load(file.Provider("../config.yaml"), yaml.Parser())
 }
 
 func initDb() *sqlx.DB {
@@ -113,7 +112,6 @@ func initHTTPServer(app *App) *echo.Echo {
 	initHTTPHandlers(srv, app)
 
 	// Start the server.
-	// go func() {
 	if err := srv.Start(ko.String("app.address")); err != nil {
 		if strings.Contains(err.Error(), "Server closed") {
 			fmt.Println("Server was shut down")
@@ -121,7 +119,6 @@ func initHTTPServer(app *App) *echo.Echo {
 			panic(err)
 		}
 	}
-	// }()
 
 	return srv
 }

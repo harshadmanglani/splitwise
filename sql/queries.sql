@@ -11,9 +11,6 @@ SELECT * FROM users WHERE
 -- users
 -- name: insert-user
 -- Insert a user
-WITH user_cte AS (
-    INSERT INTO users(uuid, username, name, email, phone, pass_hash) 
-    VALUES($1, $2, $3, $4, $5, $6)
-    RETURNING id, uuid, username
-)
-SELECT id, uuid, username from user_cte;
+INSERT INTO users(uuid, username, name, email, phone, pass_hash) 
+VALUES($1, $2, $3, $4, $5, $6)
+RETURNING id
