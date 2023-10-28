@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/harshadmanglani/splitwise/jwt"
 	"github.com/harshadmanglani/splitwise/models"
 	"github.com/jmoiron/sqlx"
 	"github.com/knadh/goyesql/v2"
@@ -109,7 +110,7 @@ func initHTTPServer(app *App) *echo.Echo {
 	})
 
 	// Register all HTTP handlers.
-	initHTTPHandlers(srv, app)
+	initHTTPHandlers(srv)
 
 	// Start the server.
 	if err := srv.Start(ko.String("app.address")); err != nil {
@@ -133,4 +134,8 @@ func joinFSPaths(root string, paths []string) []string {
 	}
 
 	return out
+}
+
+func initJwt() *jwt.JwtGenerator {
+	return jwt.NewJwtGenerator("", jwt.HMACSHA256)
 }

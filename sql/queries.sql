@@ -1,9 +1,9 @@
 -- users
 -- name: get-user
--- Get a single user by id or UUID or email or phone
+-- Get a single user by username or email or phone
 SELECT * FROM users WHERE
     CASE 
-        WHEN $1 > 0 THEN id = $1
+        WHEN $1 != '' THEN username = $1
         WHEN $2 != '' THEN email = $2
         WHEN $3 != '' THEN phone = $3
     END;
