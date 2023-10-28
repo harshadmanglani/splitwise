@@ -26,4 +26,3 @@ go.work
 # Build output
 splitwise
 **/__debug_bin
-**/cmd
