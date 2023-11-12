@@ -11,3 +11,5 @@ db:
   max_open: 25
   max_idle: 25
   max_lifetime: 300s
+
+secret: ABCD1234

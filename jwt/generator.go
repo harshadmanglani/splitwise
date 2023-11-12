@@ -12,14 +12,14 @@ import (
 )
 
 type JwtGenerator struct {
-	keyFilePath string
-	algorithm   Algorithm
+	secret    string
+	algorithm Algorithm
 }
 
-func NewJwtGenerator(keyFilePath string, algorithm Algorithm) *JwtGenerator {
+func NewJwtGenerator(secret string, algorithm Algorithm) *JwtGenerator {
 	generator := &JwtGenerator{
-		keyFilePath: keyFilePath,
-		algorithm:   algorithm,
+		secret:    secret,
+		algorithm: algorithm,
 	}
 	return generator
 }
@@ -36,8 +36,7 @@ func (generator *JwtGenerator) GenerateJwt(claims Claims) string {
 }
 
 func (generator *JwtGenerator) generateJwtSignature(message string) string {
-	key := "ABC123456"
-	mac := hmac.New(sha256.New, []byte(key))
+	mac := hmac.New(sha256.New, []byte(generator.secret))
 	mac.Write([]byte(message))
 	signature := mac.Sum(nil)
 	return base64.StdEncoding.EncodeToString(signature)

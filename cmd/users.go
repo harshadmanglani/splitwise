@@ -52,7 +52,7 @@ func insertUser(ctx echo.Context) error {
 		}
 	}
 
-	return ctx.JSON(http.StatusOK, okResp{true})
+	return ctx.JSON(http.StatusCreated, okResp{true})
 }
 
 func getUser(ctx echo.Context) error {

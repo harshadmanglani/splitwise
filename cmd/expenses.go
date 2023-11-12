@@ -7,5 +7,5 @@ import (
 )
 
 func createExpense(ctx echo.Context) error {
-	return ctx.JSON(http.StatusOK, okResp{true})
+	return ctx.JSON(http.StatusOK, okResp{ctx.Get("claims")})
 }

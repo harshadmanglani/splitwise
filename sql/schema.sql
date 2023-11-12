@@ -14,19 +14,3 @@ CREATE TABLE users (
 );
 DROP INDEX IF EXISTS idx_users_email; CREATE UNIQUE INDEX idx_users_email ON users(LOWER(email));
 DROP INDEX IF EXISTS idx_users_phone; CREATE UNIQUE INDEX idx_users_phone ON users(phone);
-
--- refresh_tokens
-CREATE TYPE token_state AS ENUM ('ACTIVE', 'REVOKED', 'EXPIRED');
-DROP TABLE IF EXISTS refresh_tokens CASCADE;
-CREATE TABLE refresh_tokens (
-    id SERIAL PRIMARY KEY,
-    jti uuid NOT NULL,
-    token TEXT NOT NULL,
-    user_uuid uuid REFERENCES users(uuid),
-    state token_state DEFAULT 'ACTIVE',
-    expiry TIMESTAMP WITH TIME ZONE,
-
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-)
-DROP INDEX IF EXISTS idx_user_uuid_state; CREATE UNIQUE INDEX idx_user_uuid_state on refresh_tokens(user_uuid, state);

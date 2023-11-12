@@ -46,14 +46,16 @@ func initDb() *sqlx.DB {
 	}
 
 	if err := ko.Unmarshal("db", &c); err != nil {
-		fmt.Printf("error loading db config: %v", err)
+		fmt.Printf("An error occurred while loading db config: %v", err)
+		panic(err)
 	}
 
-	fmt.Printf("connecting to db: %s:%d/%s\n", c.Host, c.Port, c.DBName)
+	fmt.Printf("Connecting to db: %s:%d/%s\n", c.Host, c.Port, c.DBName)
 	db, err := sqlx.Connect("postgres",
 		fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s %s", c.Host, c.Port, c.User, c.Password, c.DBName, c.SSLMode, c.Params))
 	if err != nil {
-		fmt.Printf("error connecting to DB: %v", err)
+		fmt.Printf("An error occurred while connecting to DB: %v", err)
+		panic(err)
 	}
 
 	db.SetMaxOpenConns(c.MaxOpen)
@@ -91,7 +93,7 @@ func initFs() stuffbin.FileSystem {
 	files = append(files, joinFSPaths(appDir, appFiles)...)
 	fs, err := stuffbin.NewLocalFS("/", files...)
 	if err != nil {
-		fmt.Printf("failed reading files from disk: %v", err)
+		fmt.Printf("Failed reading files from disk: %v", err)
 	}
 	return fs
 }
@@ -137,5 +139,10 @@ func joinFSPaths(root string, paths []string) []string {
 }
 
 func initJwt() *jwt.JwtGenerator {
-	return jwt.NewJwtGenerator("", jwt.HMACSHA256)
+	var secret string
+	if err := ko.Unmarshal("secret", &secret); err != nil {
+		fmt.Printf("An error occurred while loading secret from config: %v", err)
+		panic(err)
+	}
+	return jwt.NewJwtGenerator(secret, jwt.HMACSHA256)
 }
