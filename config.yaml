@@ -1,0 +1,15 @@
+app:
+  address: 0.0.0.0:9000
+
+db:
+  host: localhost
+  port: 5432
+  user: GuestBrowsing
+  password: GuestBrowsing
+  database: GuestBrowsing
+  ssl_mode: disable
+  max_open: 25
+  max_idle: 25
+  max_lifetime: 300s
+
+secret: ABCD1234
