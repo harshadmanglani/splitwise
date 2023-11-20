@@ -13,4 +13,16 @@ SELECT * FROM users WHERE
 -- Insert a user
 INSERT INTO users(uuid, username, name, email, phone, pass_hash) 
 VALUES($1, $2, $3, $4, $5, $6)
-RETURNING id
+RETURNING uuid
+
+-- expenses
+-- name: insert-expense
+INSERT INTO expenses(uuid, amount, title, split_mode, owner_uuid, group_uuid)
+VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING uuid
+
+-- splits
+-- name: insert-split
+INSERT INTO splits(uuid, expense_uuid, amount, owed_by_uuid, owed_to_uuid, settled, group_uuid)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING uuid

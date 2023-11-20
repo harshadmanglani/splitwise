@@ -14,19 +14,27 @@ import (
 
 func insertUser(ctx echo.Context) error {
 	app := ctx.Get("app").(*App)
-	var user models.User
+	var request models.CreateUserRequest
+
+	if err := ctx.Bind(&request); err != nil {
+		return err
+	}
+
 	uu, err := uuid.NewV4()
 	if err != nil {
 		fmt.Println(err)
 	}
-	user.Uuid = uu.String()
-	fmt.Println(user)
-	if err := ctx.Bind(&user); err != nil {
-		return err
+	var user *models.User = &models.User{
+		UserId:   uu.String(),
+		Name:     request.Name,
+		Email:    request.Email,
+		Phone:    request.Phone,
+		Username: request.Username,
+		PassHash: request.PassHash,
 	}
-	fmt.Println(user)
+
 	if err := app.queries.InsertUser.Get(&user.Id,
-		user.Uuid,
+		user.UserId,
 		user.Username,
 		user.Name,
 		user.Email,
@@ -62,7 +70,7 @@ func getUser(ctx echo.Context) error {
 func loginUser(ctx echo.Context) error {
 	app := ctx.Get("app").(*App)
 	jwtg := app.jwtg
-	expirationDate := time.Now().Add(2 * time.Minute)
+	expirationDate := time.Now().Add(2 * time.Hour)
 
 	var request models.LoginRequest
 	if err := ctx.Bind(&request); err != nil {
@@ -78,7 +86,7 @@ func loginUser(ctx echo.Context) error {
 	claims := jwt.Claims{
 		Issuer:   "backend",
 		Expiry:   expirationDate,
-		Subject:  user.Uuid,
+		Subject:  user.UserId,
 		IssuedAt: time.Now(),
 	}
 	token := jwtg.GenerateJwt(claims)
