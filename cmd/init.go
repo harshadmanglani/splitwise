@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"path"
 	"strings"
 	"time"
 
+	"github.com/harshadmanglani/polaris"
 	"github.com/harshadmanglani/splitwise/jwt"
 	"github.com/harshadmanglani/splitwise/models"
 	"github.com/jmoiron/sqlx"
@@ -16,6 +18,7 @@ import (
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/stuffbin"
 	"github.com/labstack/echo/v4"
+	"github.com/redis/go-redis/v9"
 )
 
 var (
@@ -27,8 +30,35 @@ var (
 	}
 )
 
+type RedisInterface struct {
+	client redis.Client
+}
+
+func (ri *RedisInterface) Write(key string, value interface{}) {
+	ctx := context.Background()
+	ri.client.Set(ctx, key, value, 0)
+}
+
+func (ri *RedisInterface) Read(key string) (interface{}, bool) {
+	ctx := context.Background()
+	val, err := ri.client.Get(ctx, key).Result()
+	if err != nil {
+		return nil, false
+	}
+	return val, true
+}
+
 func init() {
 	ko.Load(file.Provider("../config.yaml"), yaml.Parser())
+	client := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	})
+	redisInterface := RedisInterface{
+		client: *client,
+	}
+	polaris.InitRegistry(&redisInterface)
 }
 
 func initDb() *sqlx.DB {
