@@ -3,7 +3,6 @@ package models
 import null "gopkg.in/volatiletech/null.v6"
 
 type Base struct {
-	Id        int       `db:"id" json:"id"`
 	CreatedAt null.Time `db:"created_at" json:"createdAt"`
 	UpdatedAt null.Time `db:"updated_at" json:"updatedAt"`
 }
@@ -11,7 +10,7 @@ type Base struct {
 type User struct {
 	Base
 
-	UserId   string `db:"uuid" json:"userId"`
+	UserId   int    `db:"user_id" json:"userId"`
 	Username string `db:"username" json:"username"`
 	PassHash string `db:"pass_hash" json:"-"`
 	Email    string `db:"email" json:"email"`
@@ -22,29 +21,34 @@ type User struct {
 type Group struct {
 	Base
 
-	Uuid string `db:"uuid" json:"groupId"`
-	Name string `db:"name" json:"name"`
+	GroupId int    `db:"group_id" json:"groupId"`
+	Name    string `db:"name" json:"name"`
 }
 
 type UserGroupMapping struct {
 	Base
 
-	UserId  string `db:"user_uuid" json:"userId"`
-	GroupId string `db:"group_uuid" json:"groupId"`
+	UserId  int    `db:"user_id" json:"userId"`
+	GroupId string `db:"group_id" json:"groupId"`
 }
 
 type Expense struct {
 	Base
 
-	ExpenseId string `db:"uuid" json:"expenseId"`
+	ExpenseId int    `db:"expense_id" json:"expenseId"`
 	Title     string `db:"title" json:"title"`
 	Amount    int64  `db:"amount" json:"amount"`
 	OwedTo    string `db:"owed_to" json:"owedTo"`
-	GroupId   string `db:"group_uuid" json:"groupId"`
+	GroupId   string `db:"group_id" json:"groupId"`
 }
 
-type UserExpenseMapping struct {
+type Balance struct {
 	Base
 
-	UserExpenseMappingId string `db:"uuid"`
+	BalanceId int    `db:"balance_id" json:"balanceId"`
+	Amount    int64  `db:"amount" json:"amount"`
+	OwedBy    string `db:"owed_by" json:"owedBy"`
+	ExpenseId string `db:"expense_id" json:"expenseId"`
+	GroupId   string `db:"group_id" json:"groupId"`
+	Settled   bool   `db:"settled" json:"isSettled"`
 }

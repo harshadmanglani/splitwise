@@ -23,12 +23,17 @@ type ValidateExpense struct {
 type PersistExpense struct {
 }
 
-type SettleBalance struct {
-}
-
 type ExpenseSettled struct {
 }
 
 func createExpense(ctx echo.Context) error {
+	return ctx.JSON(http.StatusOK, okResp{ctx.Get("claims")})
+}
+
+func getExpense(ctx echo.Context) error {
+	return ctx.JSON(http.StatusOK, okResp{ctx.Get("claims")})
+}
+
+func editExpense(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, okResp{ctx.Get("claims")})
 }

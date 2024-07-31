@@ -12,12 +12,11 @@ type okResp struct {
 	Data interface{} `json:"data"`
 }
 
-func jwtMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+func authMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		app := ctx.Get("app").(*App)
-		jwtg := app.jwtg
 		auth := ctx.Request().Header.Get("Authorization")
-		claims, err := jwtg.VerifyAndReturnClaims(auth)
+		claims, err := app.jwt.VerifyAndReturnClaims(auth)
 		if err != jwt.NO_ERROR {
 			return ctx.JSON(http.StatusUnauthorized, okResp{err})
 		}
@@ -27,17 +26,18 @@ func jwtMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func initHTTPHandlers(e *echo.Echo) {
-	var api *echo.Group = e.Group("/api")
-	api.GET("/health", handleHealthCheck)
+	e.GET("/healthcheck", handleHealthCheck)
+	e.POST("/api/users", createUser)
+	e.POST("/api/users/login", loginUser)
 
-	var users *echo.Group = e.Group("/users")
-	users.POST("", insertUser)
-	users.GET("", getUser)
-	users.POST("/login", loginUser)
-
-	var expenses *echo.Group = e.Group("/expenses")
-	expenses.Use(jwtMiddleware)
-	expenses.POST("", createExpense)
+	api := e.Group("/api")
+	api.Use(authMiddleware)
+	api.GET("/users/:userId", getUser)
+	api.POST("/expenses", createExpense)
+	api.GET("/expenses/:expenseId", getExpense)
+	api.PATCH("/expenses/:expenseId", editExpense)
+	api.PATCH("/balances/:balanceId", editBalance)
+	api.GET("/balances/:balanceId", getBalance)
 
 	routes := e.Routes()
 	fmt.Println("Registered Routes:")
@@ -46,7 +46,6 @@ func initHTTPHandlers(e *echo.Echo) {
 	}
 }
 
-// handleHealthCheck is a healthcheck endpoint that returns a 200 response.
 func handleHealthCheck(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, okResp{true})
 }

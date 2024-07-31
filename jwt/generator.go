@@ -6,54 +6,68 @@ import (
 	"crypto/subtle"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
+	"log"
 	"strings"
 	"time"
+
+	"go.uber.org/zap"
 )
 
-type JwtGenerator struct {
+var sugar *zap.SugaredLogger
+
+func init() {
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	sugar = logger.Sugar()
+	defer logger.Sync()
+}
+
+type JwtManager struct {
 	secret    string
 	algorithm Algorithm
 }
 
-func NewJwtGenerator(secret string, algorithm Algorithm) *JwtGenerator {
-	generator := &JwtGenerator{
+func NewJwtManager(secret string, algorithm Algorithm) *JwtManager {
+	jm := &JwtManager{
 		secret:    secret,
 		algorithm: algorithm,
 	}
-	return generator
+	return jm
 }
 
-func (generator *JwtGenerator) GenerateJwt(claims Claims) string {
+func (jm *JwtManager) Generate(claims Claims) string {
 	headers := headers{
-		Alg: generator.algorithm,
+		Alg: jm.algorithm,
 		Typ: "JWT",
 	}
 	base64Headers := base64Encode(headers)
 	base64Claims := base64Encode(claims)
-	signature := generator.generateJwtSignature(strings.Join([]string{base64Headers, base64Claims}, "."))
+	signature := jm.generateJwtSignature(strings.Join([]string{base64Headers, base64Claims}, "."))
 	return strings.Join([]string{base64Headers, base64Claims, signature}, ".")
 }
 
-func (generator *JwtGenerator) generateJwtSignature(message string) string {
-	mac := hmac.New(sha256.New, []byte(generator.secret))
+func (jm *JwtManager) generateJwtSignature(message string) string {
+	mac := hmac.New(sha256.New, []byte(jm.secret))
 	mac.Write([]byte(message))
 	signature := mac.Sum(nil)
 	return base64.StdEncoding.EncodeToString(signature)
 }
 
-func (generator *JwtGenerator) VerifyAndReturnClaims(token string) (Claims, AuthError) {
+func (jm *JwtManager) VerifyAndReturnClaims(token string) (Claims, AuthError) {
 	splitToken := strings.Split(token, ".")
 	base64Headers := splitToken[0]
 	base64Claims := splitToken[1]
 	base64Signature := splitToken[2]
 
-	generatedBase64Signature := generator.generateJwtSignature(strings.Join([]string{base64Headers, base64Claims}, "."))
+	generatedBase64Signature := jm.generateJwtSignature(strings.Join([]string{base64Headers, base64Claims}, "."))
 	var claims Claims
 	if subtle.ConstantTimeCompare([]byte(base64Signature), []byte(generatedBase64Signature)) == 1 {
 		jsonClaims, err := base64.StdEncoding.DecodeString(base64Claims)
 		if err != nil {
-			fmt.Println("An error occurred in decrypting the token!")
+			sugar.Error("An error occurred in decrypting the token!")
 			panic(err)
 		}
 		json.Unmarshal(jsonClaims, &claims)

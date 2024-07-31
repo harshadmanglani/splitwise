@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"path"
 	"strings"
 	"time"
@@ -19,15 +20,17 @@ import (
 	"github.com/knadh/stuffbin"
 	"github.com/labstack/echo/v4"
 	"github.com/redis/go-redis/v9"
+	"go.uber.org/zap"
 )
 
 var (
-	ko              = koanf.New(".")
-	appDir   string = "../"
-	appFiles        = []string{
+	ko       = koanf.New(".")
+	appDir   = "../"
+	appFiles = []string{
 		"./sql/queries.sql:queries.sql",
 		"./sql/schema.sql:schema.sql",
 	}
+	sugar *zap.SugaredLogger
 )
 
 type RedisInterface struct {
@@ -59,6 +62,13 @@ func init() {
 		client: *client,
 	}
 	polaris.InitRegistry(&redisInterface)
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	sugar = logger.Sugar()
+	defer logger.Sync()
 }
 
 func initDb() *sqlx.DB {
@@ -135,9 +145,9 @@ func initHTTPServer(app *App) *echo.Echo {
 
 	// Register app (*App) to be injected into all HTTP handlers.
 	srv.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			c.Set("app", app)
-			return next(c)
+		return func(ctx echo.Context) error {
+			ctx.Set("app", app)
+			return next(ctx)
 		}
 	})
 
@@ -168,11 +178,11 @@ func joinFSPaths(root string, paths []string) []string {
 	return out
 }
 
-func initJwt() *jwt.JwtGenerator {
+func initJwt() *jwt.JwtManager {
 	var secret string
 	if err := ko.Unmarshal("secret", &secret); err != nil {
 		fmt.Printf("An error occurred while loading secret from config: %v", err)
 		panic(err)
 	}
-	return jwt.NewJwtGenerator(secret, jwt.HMACSHA256)
+	return jwt.NewJwtManager(secret, jwt.HMACSHA256)
 }
