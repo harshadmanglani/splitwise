@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/gofrs/uuid"
-	"github.com/harshadmanglani/splitwise/jwt"
-	"github.com/harshadmanglani/splitwise/models"
+	"github.com/harshadmanglani/whopays/jwt"
+	"github.com/harshadmanglani/whopays/models"
 	"github.com/labstack/echo/v4"
 	"github.com/lib/pq"
 )

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/harshadmanglani/splitwise/jwt"
-	"github.com/harshadmanglani/splitwise/models"
+	"github.com/harshadmanglani/whopays/jwt"
+	"github.com/harshadmanglani/whopays/models"
 	"github.com/jmoiron/sqlx"
 	"github.com/knadh/goyesql/v2"
 	goyesqlx "github.com/knadh/goyesql/v2/sqlx"

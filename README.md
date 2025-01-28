@@ -1,4 +1,4 @@
-# splitwise
+# whopays
 
 ## Requirements
 Create a backend application that allows users to do the following tasks
