@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
+<<<<<<< HEAD
 	"github.com/harshadmanglani/splitwise/jwt"
+=======
+	"github.com/harshadmanglani/whopays/jwt"
+>>>>>>> ca4e8dcb09fdce6af5de352209cec842475b85ed
 	"github.com/labstack/echo/v4"
 )
 
