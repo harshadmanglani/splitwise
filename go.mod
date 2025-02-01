@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-module github.com/harshadmanglani/splitwise
-=======
 module github.com/harshadmanglani/whopays
->>>>>>> ca4e8dcb09fdce6af5de352209cec842475b85ed
 
 go 1.20
 
