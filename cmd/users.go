@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -12,21 +13,21 @@ import (
 	"github.com/lib/pq"
 )
 
-func insertUser(ctx echo.Context) error {
+func createUser(ctx echo.Context) error {
 	app := ctx.Get("app").(*App)
 	var user models.User
 	uu, err := uuid.NewV4()
 	if err != nil {
 		fmt.Println(err)
 	}
-	user.Uuid = uu.String()
+	user.UserId, _ = strconv.Atoi(uu.String())
 	fmt.Println(user)
 	if err := ctx.Bind(&user); err != nil {
 		return err
 	}
 	fmt.Println(user)
-	if err := app.queries.InsertUser.Get(&user.Id,
-		user.Uuid,
+	if err := app.queries.InsertUser.Get(&user.UserId,
+		user.UserId,
 		user.Username,
 		user.Name,
 		user.Email,
@@ -56,12 +57,15 @@ func insertUser(ctx echo.Context) error {
 }
 
 func getUser(ctx echo.Context) error {
-	return ctx.JSON(http.StatusOK, okResp{models.User{}})
+	userId := ctx.Param("userId")
+	app := ctx.Get("app").(*App)
+	user := &models.User{}
+	app.queries.GetUser.Get(user, nil, nil, nil, userId)
+	return ctx.JSON(http.StatusOK, okResp{user})
 }
 
 func loginUser(ctx echo.Context) error {
 	app := ctx.Get("app").(*App)
-	jwtg := app.jwtg
 	expirationDate := time.Now().Add(2 * time.Minute)
 
 	var request models.LoginRequest
@@ -78,10 +82,10 @@ func loginUser(ctx echo.Context) error {
 	claims := jwt.Claims{
 		Issuer:   "backend",
 		Expiry:   expirationDate,
-		Subject:  user.Uuid,
+		Subject:  strconv.Itoa(user.UserId),
 		IssuedAt: time.Now(),
 	}
-	token := jwtg.GenerateJwt(claims)
+	token := app.jwt.Generate(claims)
 	return ctx.JSON(http.StatusOK, okResp{models.LoginResponse{
 		User:        user,
 		AccessToken: token,

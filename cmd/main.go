@@ -12,29 +12,20 @@ type App struct {
 	db      *sqlx.DB
 	queries *models.Queries
 	fs      stuffbin.FileSystem
-	jwtg    *jwt.JwtGenerator
+	jwt     *jwt.JwtManager
 }
 
-var (
-	db      *sqlx.DB
-	queries *models.Queries
-	fs      stuffbin.FileSystem
-	jwtg    *jwt.JwtGenerator
-)
-
-func init() {
-	db = initDb()
-	fs = initFs()
-	queries = readAndPrepareQueries("./queries.sql", db.Unsafe(), fs)
-	jwtg = initJwt()
+func newApp() *App {
+	app := &App{
+		db:  initDb(),
+		fs:  initFs(),
+		jwt: initJwt(),
+	}
+	app.queries = readAndPrepareQueries("./queries.sql", app.db.Unsafe(), app.fs)
+	return app
 }
 
 func main() {
-	app := &App{
-		db:      db,
-		queries: queries,
-		fs:      fs,
-		jwtg:    jwtg,
-	}
+	app := newApp()
 	initHTTPServer(app)
 }
