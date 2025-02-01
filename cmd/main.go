@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/harshadmanglani/splitwise/jwt"
-	"github.com/harshadmanglani/splitwise/models"
+	"github.com/harshadmanglani/whopays/jwt"
+	"github.com/harshadmanglani/whopays/models"
 	"github.com/jmoiron/sqlx"
 	"github.com/knadh/stuffbin"
 	_ "github.com/lib/pq"

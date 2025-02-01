@@ -1,4 +1,4 @@
-module github.com/harshadmanglani/splitwise
+module github.com/harshadmanglani/whopays
 
 go 1.20
 

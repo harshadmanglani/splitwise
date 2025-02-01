@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/harshadmanglani/splitwise/jwt"
+	"github.com/harshadmanglani/whopays/jwt"
 	"github.com/labstack/echo/v4"
 )
 
